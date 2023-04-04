@@ -1,13 +1,25 @@
+
+from send_mail import yag_mail
 from flask import Flask, render_template, request
 from chatgpt import Chatbot
-
 
 app = Flask(__name__)
 chat = ""
 
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def home():
+    if request.method == 'POST':
+        result = {}
+
+        result['name'] = request.form['name']
+        result['email'] = request.form['email'].replace(' ', '').lower()
+        result['message'] = request.form['message']
+
+        yag_mail(result)
+
+        return render_template('thank-you.html', **locals())
+
     return render_template("index.html")
 
 
